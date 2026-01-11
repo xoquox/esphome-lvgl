@@ -1,0 +1,30 @@
+esphome:
+  name: test
+  friendly_name: Test
+
+
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: "MXEzwofsI9sdlWhP5TJC6J3X9nG4Zj9Fc81QaTtu5w8="
+
+ota:
+  - platform: esphome
+    password: "64d51329d1a06c4ca235c5c2ce1717ad"
+
+
+
+captive_portal:
+    
+
+substitutions:
+  home_page: lighting_1
+
+packages:
+  common: !include common.yaml
+  device: !include devices/ESP32-8048S043.yaml
+  layout: !include layouts/layout_test.yaml
