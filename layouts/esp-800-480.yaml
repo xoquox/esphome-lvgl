@@ -1,0 +1,109 @@
+font: !include
+  file: fonts/fonts.yaml
+  vars:
+    text_sm: 26
+    text_md: 30
+    text_lg: 34
+    text_xl: 48
+    text_xxl: 64
+    icons_sm: 26
+    icons_md: 32
+    icons_lg: 40
+    icons_xl: 48
+    icons_xxl: 56
+
+.sizing:
+  - &nav_widget_vars
+    height: 65 
+    padding: 8
+
+  - &page_styles
+    <<: !include styles/page_styles.yaml
+    pad_top: 65
+    pad_bottom: 65
+
+  - &container_styles
+    <<: !include styles/container_styles.yaml
+    pad_top: 0
+    pad_bottom: 0
+    pad_left: 10
+    pad_right: 10
+
+  - &button_layout
+    <<: !include styles/button_layout.yaml
+    pad_column: 10
+    pad_row: 10
+
+  - &button_widget_vars
+    width: 49%
+    height: 100
+
+  - &wide_button_widget_vars
+    width: 100%
+    height: 100
+
+script:
+  - id: go_home
+    then:
+      - lvgl.page.show: ${home_page}
+
+lvgl:
+  default_font: roboto_md
+  theme: !include themes/main.yaml
+  top_layer:
+    widgets:
+      - <<: !include { file: widgets/header/widget.yaml, vars: { <<: *nav_widget_vars } }
+      - <<: !include { file: widgets/footer/widget.yaml, vars: { <<: *nav_widget_vars } }
+      - <<: !include { file: widgets/boot_screen/widget.yaml }
+  pages:
+    - id: splash
+      skip: true
+      on_load:
+        - script.execute: go_home
+
+    - id: lighting_1
+      <<: *page_styles
+      on_load:
+        - lvgl.label.update:
+            id: page_title
+            text: Küche
+      widgets:
+        - obj:
+            <<: *container_styles
+            layout:
+              <<: *button_layout
+            widgets:
+              - <<: !include 
+                  file: widgets/climate/thermostat/widget_thermostat.yaml
+                  vars:
+                    uid: kitchen_thermostat
+                    entity_id: climate.kuche_2
+                    width: 100%
+                    height: 200
+                    text: "Küche"
+                
+              - button: # second floor lights
+                  <<: !include
+                    file: widgets/buttons/icon_text_buttons/light_group_buttons/widget.yaml
+                    vars:
+                      uid: second_floor_lights
+                      entity_id: switch.sonoff_1002431121
+                      text: Zirkulation
+                      <<: *wide_button_widget_vars
+
+
+packages:
+  # header
+  header_sensors: !include { file: widgets/header/sensors.yaml }
+
+  # boot screen
+  boot_screen_sensors: !include { file: widgets/boot_screen/sensors.yaml }
+  
+  kitchen_thermostat_sensors: !include { file: widgets/climate/thermostat/sensor_thermostat.yaml }
+
+  # lighting
+  second_floor_lights_widget_sensor: !include { file: widgets/buttons/icon_text_buttons/light_group_buttons/sensors.yaml, vars: {
+    uid: second_floor_lights,
+    entity_id: switch.sonoff_1002431121
+  }}
+
