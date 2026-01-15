@@ -17,8 +17,6 @@
       icon_off: "\U000F1254"
       text: ${text}
   on_click:
-    - lambda: |-
-        ESP_LOGD("LVGL", "CLICK second_floor_lights");
     - homeassistant.service:
         service: switch.toggle
         data:
