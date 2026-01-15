@@ -1,0 +1,56 @@
+# required vars:
+# - uid
+# - entity_id
+# - width
+# - height
+# - text
+
+# Thermostat Widget
+# zeigt Ist-Temperatur, Ziel-Temperatur und Slider
+
+button:
+  id: ${uid}_widget
+  width: ${width}
+  height: ${height}
+
+  widgets:
+    # Label für den Namen
+    - label:
+        id: kitchen_widget_text
+        text: ${text}
+        text_font: roboto_md
+        align: TOP_LEFT
+
+    # Label für Ist-Temperatur
+    - label:
+        id: kitchen_widget_current
+        text: "--°C"
+        text_font: roboto_md
+        align: CENTER
+
+    # Label für Soll-Temperatur
+    - label:
+        id: kitchen_widget_target
+        text: "--°C"
+        text_font: roboto_md
+        align: BOTTOM_MID
+
+    # Slider für Ziel-Temperatur
+    - slider:
+        id: kitchen_widget_slider
+        width: 80%
+        height: 40
+        x: 10
+        y: 30
+        min_value: 5
+        max_value: 30
+        value: 20
+        on_release:
+          then:
+            - lambda: |-
+                ESP_LOGD("LVGL", "Slider changed: %.1f", x);
+            - homeassistant.service:
+                service: climate.set_temperature
+                data:
+                  entity_id: ${entity_id}
+                  temperature: !lambda 'return x;'

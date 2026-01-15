@@ -1,0 +1,32 @@
+# required vars:
+# - uid
+# - entity_id
+
+sensor:
+  # Aktuelle Temperatur (Ist-Wert)
+  - platform: homeassistant
+    id: kitchen_current_temp
+    entity_id: climate.kuche_2
+    attribute: current_temperature
+    on_value:
+      - lvgl.label.update:
+          id: kitchen_widget_current
+          text:  #!lambda 'return String(x) + "°C";'
+            format: "%.1f °C"
+            args: [x]
+
+  # Soll-Temperatur (Zielwert)
+  - platform: homeassistant
+    id: kitchen_target_temp
+    entity_id: climate.kuche_2
+    attribute: temperature
+    on_value:
+      - lvgl.label.update:
+          id: kitchen_widget_target
+          text: #Test #!lambda 'return String(x) + "°C";'
+            format: "%.1f °C"
+            args: [x] 
+      - lvgl.slider.update:
+          id: kitchen_widget_slider
+          value: !lambda 'return x;'
+
