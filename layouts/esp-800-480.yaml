@@ -99,7 +99,10 @@ packages:
   # boot screen
   boot_screen_sensors: !include { file: widgets/boot_screen/sensors.yaml }
   
-  kitchen_thermostat_sensors: !include { file: widgets/climate/thermostat/sensor_thermostat.yaml }
+  kitchen_thermostat_sensors: !include { file: widgets/climate/thermostat/sensor_thermostat.yaml, vars: {
+    uid: kitchen_thermostat,
+    entity_id: climate.kuche_thermostat
+  }}
 
   # lighting
   second_floor_lights_widget_sensor: !include { file: widgets/buttons/icon_text_buttons/light_group_buttons/sensors.yaml, vars: {
