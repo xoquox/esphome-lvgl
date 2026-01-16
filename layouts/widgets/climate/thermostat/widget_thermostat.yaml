@@ -30,7 +30,7 @@ button:
 
     # Label für Soll-Temperatur
     - label:
-        id: kitchen_widget_target
+        id: ${uid}_widget_target
         text: "--°C"
         text_font: roboto_md
         align: BOTTOM_MID
