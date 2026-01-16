@@ -16,14 +16,14 @@ button:
   widgets:
     # Label für den Namen
     - label:
-        id: kitchen_widget_text
+        id: ${uid}_widget_text
         text: ${text}
         text_font: roboto_md
         align: TOP_LEFT
 
     # Label für Ist-Temperatur
     - label:
-        id: kitchen_widget_current
+        id: ${uid}_widget_current
         text: "--°C"
         text_font: roboto_md
         align: CENTER
@@ -37,7 +37,7 @@ button:
 
     # Slider für Ziel-Temperatur
     - slider:
-        id: kitchen_widget_slider
+        id: ${uid}_widget_slider
         width: 80%
         height: 40
         x: 10
@@ -47,8 +47,6 @@ button:
         value: 20
         on_release:
           then:
-            - lambda: |-
-                ESP_LOGD("LVGL", "Slider changed: %.1f", x);
             - homeassistant.service:
                 service: climate.set_temperature
                 data:
