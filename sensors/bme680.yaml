@@ -1,0 +1,65 @@
+sensor:
+  - platform: bme680
+    i2c_id: bus_b
+    address: 0x77
+    update_interval: 10s
+    temperature:
+      name: "Temperatur"
+      oversampling: 16x
+      on_value:
+        then:
+          - lvgl.label.update:
+              id: bme680_temp_label
+              text: !lambda |-
+                char buf[16];
+                snprintf(buf, sizeof(buf), "%.1f °C", x);
+                return std::string(buf);
+    pressure:
+      name: "Druck"
+      
+    humidity:
+      id: bme680_humidity
+      name: "Luftfeuchtigkeit"
+      on_value:
+        then:
+          - lvgl.label.update:
+              id: bme680_hum_label
+              text: !lambda |-
+                char buf[16];
+                snprintf(buf, sizeof(buf), "%.0f %%", x);
+                return std::string(buf);
+                
+    gas_resistance:
+      id: bme680_gas_resistance
+      name: "Gas Widerstand"
+
+  - platform: template
+    name: "Luftqualität"
+    id: bme680_iaq
+    icon: "mdi:gauge"
+    lambda: |-
+      return log(id(bme680_gas_resistance).state) + 0.04 * id(bme680_humidity).state;
+    on_value:
+      then:
+        - lvgl.label.update:
+            id: bme680_iaq_label
+            text: !lambda |-
+              char buf[16];
+              snprintf(buf, sizeof(buf), "%.0f IAQ", x);
+              return std::string(buf);
+    state_class: measurement
+
+text_sensor:
+  - platform: template
+    name: "IAQ Qualification"
+    icon: "mdi:checkbox-marked-circle-outline"
+    lambda: |-
+      int v = int(id(bme680_iaq).state);
+      if (v <= 50) return {"Excellent"};
+      if (v <= 100) return {"Good"};
+      if (v <= 150) return {"Lightly polluted"};
+      if (v <= 200) return {"Moderately polluted"};
+      if (v <= 250) return {"Heavily polluted"};
+      if (v <= 350) return {"Severely polluted"};
+      if (v <= 500) return {"Extremely polluted"};
+      return {"unknown"};

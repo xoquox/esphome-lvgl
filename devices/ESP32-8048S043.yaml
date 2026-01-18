@@ -12,8 +12,8 @@ esp32:
   framework:
     type: esp-idf
     # these versions prevent artifacting
-    version: 5.3.0
-    platform_version: 6.8.1
+    # version: 5.3.0
+    # platform_version: 6.8.1
     # Required to achieve sufficient PSRAM bandwidth
     sdkconfig_options:
       COMPILER_OPTIMIZATION_SIZE: y
@@ -29,8 +29,16 @@ psram:
   speed: 80MHz
 
 i2c:
-  - sda: 19
+  #touch bus
+  - id: bus_a
+    sda: 19
     scl: 20
+    scan: true
+
+  #sensor bus
+  - id: bus_b
+    sda: 17
+    scl: 18
     scan: true
 
 output:
@@ -76,6 +84,7 @@ display:
 touchscreen:
   - id: main_touchscreen
     platform: gt911
+    i2c_id: bus_a
     address: 0x5D
     update_interval: 16ms
     transform:
